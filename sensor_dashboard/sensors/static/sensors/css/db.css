@@ -1,0 +1,128 @@
+ /* Background and main layout styling */
+ body {
+    font-family: Arial, sans-serif;
+    background-color: #e0f7e9;
+    /* Light green theme */
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+
+.dashboard {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    width: 80%;
+    max-width: 1000px;
+    text-align: center;
+}
+
+/* Styling for boards */
+.board,
+.alert-board {
+    padding: 25px;
+    border-radius: 10px;
+    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.2);
+    background-color: #fff;
+    border: 3px solid #4caf50;
+    /* Green border for solid appearance */
+    transition: transform 0.2s;
+}
+
+.board:hover,
+.alert-board:hover {
+    transform: scale(1.05);
+    /* Subtle scaling effect on hover */
+}
+
+/* Temperature Board */
+.temperature-board {
+    font-size: 1.5rem;
+    background-color: lightblue;
+    text-emphasis-color: black;
+    color: black  /* Orange for temperature text */
+    /* Orange for temperature text */
+}
+#temperatureValue{ 
+    color:green;
+    font-size: 40px;
+    
+}
+
+/* Humidity Board and Meter */
+.humidity-board {
+    display: flex;
+    flex-direction: column;
+    background-color: lightblue;
+    align-items: center;
+}
+
+.humidity-meter {
+    width: 160px;
+    height: 160px;
+    border-radius: 50%;
+    background: conic-gradient(#4caf50 0% 0%, #ddd 0% 100%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 2rem;
+    color: #333;
+    margin-top: 10px;
+}
+
+.inner-circle {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    background-color: #fff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;
+    color: #4caf50;
+    border: 2px solid #4caf50;
+    /* Inner circle green border */
+}
+
+/* Soil Moisture Board */
+.soil-board {
+    font-size: 1.5rem;
+    color: #4caf50;
+    /* Green for soil moisture text */
+}
+
+/* Motion Detection Alert Board */
+.alert-board {
+    font-size: 1.2rem;
+    color: #fff;
+}
+
+.alert-on {
+    background-color: #d9534f;
+    /* Red when motion detected */
+}
+
+.alert-off {
+    background-color: #5cb85c;
+    /* Green when no motion */
+}
+
+/* Pump Status */
+.pump-status {
+    margin-top: 10px;
+    font-weight: bold;
+    color: #fff;
+    padding: 5px 15px;
+    border-radius: 5px;
+}
+
+.pump-on {
+    background-color: #4caf50;
+    /* Green for pump ON */
+}
+
+.pump-off {
+    background-color: #d9534f;
+    /* Red for pump OFF */
+}
