@@ -1,0 +1,9 @@
+sensor_dashboard/db.sqlite3
+sensor_dashboard/prediction/best_model.keras
+sensor_dashboard/temp/
+sensor_dashboard/media
+
+
+
+
+
