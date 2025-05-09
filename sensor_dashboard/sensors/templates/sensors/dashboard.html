@@ -1,227 +1,112 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sensor Dashboard</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <style>
-        body {
-            background-color: #f8f9fa; /* Light grey background */
-        }
-        .chart-container {
-            height: 300px; /* Adjust the height as needed */
-        }
-        .card {
-            background-color: #ffffff; /* White card background */
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-        }
-        .pump-indicator {
-            font-size: 1.2em;
-            font-weight: bold;
-            color: white;
-            padding: 10px;
-            border-radius: 8px;
-            display: inline-block;
-            text-align: center;
-            width: 100px;
-        }
-        .status-on {
-            color: green;
-            font-weight: bold;
-        }
-        .status-off {
-            color: red;
-            font-weight: bold;
-        }
-    </style>
-</head>
-<body>
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
 
-   <!-- Navigation Bar -->
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-    <div class="container-fluid">
-        <a class="navbar-brand" href="#">Sensor Dashboard</a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav">
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'pump_control' %}">Pump Control</a> <!-- Link to pump control -->
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'upload' %}">Crop Disease Prediction</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'admin:index' %}">Admin</a>
-                </li>
-            </ul>
+<div class="dashboard-container">
+    <h1>Welcome to Smart Farming Dashboard</h1>
+
+
+
+    <div class="dashboard">
+        <!-- Temperature Board -->
+        <div class="board temperature-board" id="temperatureBoard"> 
+            <h2>Temperature</h2>
+            <p id="temperatureValue">-- °C</p>
         </div>
-    </div>
-</nav>
 
-    <div class="container my-5">
-        <h1 class="text-center mb-4">Sensor Dashboard</h1>
-
-            <h2>Pump Status: 
-                {% if pump_status == 'ON' %}
-                    <span class="status-on">Pump ON</span>
-                {% else %}
-                    <span class="status-off">Pump OFF</span>
-                {% endif %}
-            </h2>
-        <div class="row">
-            <div class="col-md-6 mb-4">
-                <div class="card">
-                    <div class="card-body chart-container">
-                        <canvas id="temperatureChart"></canvas>
-                    </div>
-                    <div class="card-footer text-center">Temperature (°C)</div>
-                </div>
-            </div>
-            <div class="col-md-6 mb-4">
-                <div class="card">
-                    <div class="card-body chart-container">
-                        <canvas id="humidityChart"></canvas>
-                    </div>
-                    <div class="card-footer text-center">Humidity (%)</div>
-                </div>
+        <!-- Humidity Meter -->
+        <div class="board humidity-board">
+            <h2>Humidity</h2>
+            <div class="humidity-meter" id="humidityMeter">
+                <div class="inner-circle" id="humidityValue">0%</div>
             </div>
         </div>
-        <div class="row">
-            <div class="col-md-6 mb-4">
-                <div class="card">
-                    <div class="card-body chart-container">
-                        <canvas id="soilMoistureChart"></canvas>
-                    </div>
-                    <div class="card-footer text-center">Soil Moisture</div>
-                </div>
-            </div>
-            <div class="col-md-6 mb-4">
-                <div class="card">
-                    <div class="card-body chart-container">
-                        <canvas id="motionChart"></canvas>
-                    </div>
-                    <div class="card-footer text-center">Motion Detected</div>
-                </div>
-            </div>
+
+        <!-- Soil Moisture Board -->
+        <div class="board soil-board">
+            <h2>Soil Moisture</h2>
+            <p id="soilMoistureValue">-- %</p>
+            <div id="pumpStatus" class="pump-status pump-off">Pump OFF</div>
+        </div>
+
+        <!-- Motion Detection Alert Board -->
+        <div class="alert-board alert-off" id="motionAlertBoard">
+            <h2>Motion Detection</h2>
+            <p id="motionStatus">No Motion Detected</p>
         </div>
     </div>
 
     <script>
-        // Function to toggle pump state
-        async function togglePump() {
-            updatePumpButton(data.is_pump_on);
+        // Functions to update each section
+
+        // Update Temperature
+        function updateTemperature(temp) {
+            document.getElementById('temperatureValue').textContent = `${temp} °C`;
         }
 
-        // Function to update pump button based on state
-        function updatePumpButton(isPumpOn) {
-            const pumpButton = document.getElementById('pumpButton');
-            if (isPumpOn) {
-                pumpButton.classList.remove('pump-button-off');
-                pumpButton.classList.add('pump-button-on');
-                pumpButton.textContent = 'Pump ON';
+        // Update Humidity
+        function updateHumidity(humidity) {
+            const meter = document.getElementById('humidityMeter');
+            const valueDisplay = document.getElementById('humidityValue');
+            humidity = Math.max(0, Math.min(100, humidity));
+            meter.style.background = `conic-gradient(#4caf50 0% ${humidity}%, #ddd ${humidity}% 100%)`;
+            valueDisplay.textContent = `${humidity}%`;
+        }
+
+        // Update Soil Moisture and Pump Status
+        function updateSoilMoisture(moisture, pumpStatus) {
+            document.getElementById('soilMoistureValue').textContent = `${moisture} %`;
+            const pumpStatusDiv = document.getElementById('pumpStatus');
+            if (pumpStatus === "ON") {
+                pumpStatusDiv.textContent = "Pump ON";
+                pumpStatusDiv.classList.remove("pump-off");
+                pumpStatusDiv.classList.add("pump-on");
             } else {
-                pumpButton.classList.remove('pump-button-on');
-                pumpButton.classList.add('pump-button-off');
-                pumpButton.textContent = 'Pump OFF';
+                pumpStatusDiv.textContent = "Pump OFF";
+                pumpStatusDiv.classList.remove("pump-on");
+                pumpStatusDiv.classList.add("pump-off");
             }
         }
 
-        // Function to fetch data and update charts
+        // Update Motion Detection Alert
+        function updateMotionStatus(motionDetected) {
+            const motionAlertBoard = document.getElementById('motionAlertBoard');
+            const motionStatus = document.getElementById('motionStatus');
+            if (motionDetected) {
+                motionStatus.textContent = "Motion Detected!";
+                motionAlertBoard.classList.remove("alert-off");
+                motionAlertBoard.classList.add("alert-on");
+            } else {
+                motionStatus.textContent = "No Motion Detected";
+                motionAlertBoard.classList.remove("alert-on");
+                motionAlertBoard.classList.add("alert-off");
+            }
+        }
+
+
         async function fetchDataAndUpdateCharts() {
-            const response = await fetch("{% url 'get_latest_sensor_data' %}");
+            const response = await fetch("{% url 'get_data_for_dashboard' %}");
             const data = await response.json();
 
-            // Update charts with the new data
-            temperatureChart.data.labels = data.timestamps;
-            temperatureChart.data.datasets[0].data = data.temperature;
-            temperatureChart.update();
 
-            humidityChart.data.labels = data.timestamps;
-            humidityChart.data.datasets[0].data = data.humidity;
-            humidityChart.update();
 
-            soilMoistureChart.data.labels = data.timestamps;
-            soilMoistureChart.data.datasets[0].data = data.soil_moisture;
-            soilMoistureChart.update();
+            const randomTemp = data.temperature;
+            const randomHumidity = data.humidity;
+            const randomSoilMoisture = data.soil_moisture;
+            const pumpStatus = data.pump_status;
+            const motionDetected = data.motion;
 
-            motionChart.data.labels = data.timestamps;
-            motionChart.data.datasets[0].data = data.motion;
-            motionChart.update();
+            updateTemperature(randomTemp);
+            updateHumidity(randomHumidity);
+            updateSoilMoisture(randomSoilMoisture, pumpStatus);
+            updateMotionStatus(motionDetected);
 
-            // Update pump button state
-            updatePumpButton(data.is_pump_on);
+
         }
-
-        // Function to fetch and update the current pump status
-        async function fetchPumpStatus() {
-        const response = await fetch("{% url 'get_pump_status' %}");
-        const data = await response.json();
-        updatePumpIndicator(data.is_pump_on);
-    }
-    function updatePumpStatus() {
-    fetch("{% url 'get_pump_status' %}")
-        .then(response => response.json())
-        .then(data => {
-            const statusElement = document.getElementById('pump-status');
-            if (data.pump_status === 'ON') {
-                statusElement.innerHTML = "<span style='color: green;'>Pump ON</span>";
-            } else {
-                statusElement.innerHTML = "<span style='color: red;'>Pump OFF</span>";
-            }
-        });
-}
-
-    // Periodically check pump status every 5 seconds
-    setInterval(updatePumpStatus, 5000);
-
-    // Fetch initial pump status on page load
-    fetchPumpStatus();
-        // Initialize charts with configuration
-        const chartOptions = {
-            maintainAspectRatio: false,
-            responsive: true,
-            scales: {
-                x: { ticks: { maxTicksLimit: 5, font: { size: 10 } } },
-                y: { ticks: { font: { size: 10 } } }
-            },
-            plugins: {
-                legend: { labels: { font: { size: 10 } } }
-            }
-        };
-
-        const temperatureChart = new Chart(document.getElementById('temperatureChart').getContext('2d'), {
-            type: 'line',
-            data: { labels: [], datasets: [{ label: 'Temperature (°C)', backgroundColor: 'rgba(255, 99, 132, 0.2)', borderColor: 'rgba(255, 99, 132, 1)', data: [], borderWidth: 1 }] },
-            options: chartOptions
-        });
-
-        const humidityChart = new Chart(document.getElementById('humidityChart').getContext('2d'), {
-            type: 'line',
-            data: { labels: [], datasets: [{ label: 'Humidity (%)', backgroundColor: 'rgba(54, 162, 235, 0.2)', borderColor: 'rgba(54, 162, 235, 1)', data: [], borderWidth: 1 }] },
-            options: chartOptions
-        });
-
-        const soilMoistureChart = new Chart(document.getElementById('soilMoistureChart').getContext('2d'), {
-            type: 'line',
-            data: { labels: [], datasets: [{ label: 'Soil Moisture', backgroundColor: 'rgba(75, 192, 192, 0.2)', borderColor: 'rgba(75, 192, 192, 1)', data: [], borderWidth: 1 }] },
-            options: chartOptions
-        });
-
-        const motionChart = new Chart(document.getElementById('motionChart').getContext('2d'), {
-            type: 'line',
-            data: { labels: [], datasets: [{ label: 'Motion Detected', backgroundColor: 'rgba(153, 102, 255, 0.2)', borderColor: 'rgba(153, 102, 255, 1)', data: [], borderWidth: 1 }] },
-            options: chartOptions
-        });
-
-        // Fetch data every 5 seconds
-        setInterval(fetchDataAndUpdateCharts, 5000);
-
+        // Test updating with sample values (replace with real data fetching logic)
+        setInterval(fetchDataAndUpdateCharts, 3000);
     </script>
 
-</body>
-</html>
+</div>
+
+{% endblock %}
