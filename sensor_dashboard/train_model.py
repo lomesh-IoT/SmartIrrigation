@@ -5,13 +5,11 @@ from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Conv2D, MaxPooling2D, Flatten, Dense, Dropout
 from tensorflow.keras.callbacks import ModelCheckpoint
 
-# Define Paths
 train_data_dir = 'data/train'
 validation_data_dir = 'data/validation'
 image_size = (128, 128)
 batch_size = 32
 
-# Data Augmentation
 train_datagen = ImageDataGenerator(rescale=1.0/255.0, shear_range=0.2, zoom_range=0.2, horizontal_flip=True)
 validation_datagen = ImageDataGenerator(rescale=1.0/255.0)
 
@@ -29,7 +27,6 @@ validation_generator = validation_datagen.flow_from_directory(
     class_mode='categorical'
 )
 
-# Model Architecture
 model = Sequential([
     Conv2D(32, (3, 3), activation='relu', input_shape=(128, 128, 3)),
     MaxPooling2D((2, 2)),
@@ -45,10 +42,8 @@ model = Sequential([
 
 model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
 
-# Save Best Model
 checkpoint = ModelCheckpoint('best_model.keras', monitor='val_accuracy', save_best_only=True, mode='max')
 
-# Train the Model
 model.fit(
     train_generator,
     steps_per_epoch=train_generator.samples // batch_size,

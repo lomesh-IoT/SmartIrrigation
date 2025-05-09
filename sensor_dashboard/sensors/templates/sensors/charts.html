@@ -4,10 +4,10 @@
 {% load static %}
 
 <div class="container my-5">
-    <h1 class="text-center mb-4">Sensor Dashboard</h1>
+    <h1 class="text-center mb-4">Smart Farming Charts Dashboard</h1>
     <h2 id="pumpStatus">Pump OFF</h2>
 
-    <!-- Chart Containers -->
+
     <div class="row">
         <div class="col-md-6 mb-4">
             <div class="card">
@@ -41,7 +41,7 @@
                 <div class="card-body chart-container">
                     <canvas id="motionChart"></canvas>
                 </div>
-                <div class="card-footer text-center">Motion Detected</div>
+                <div class="card-footer text-center">Theft Detected</div>
             </div>
         </div>
     </div>
@@ -109,21 +109,16 @@
 
     const motionChart = new Chart(document.getElementById('motionChart').getContext('2d'), {
         type: 'line',
-        data: { labels: [], datasets: [{ label: 'Motion Detected', backgroundColor: 'rgba(153, 102, 255, 0.2)', borderColor: 'rgba(153, 102, 255, 1)', data: [], borderWidth: 1 }] },
+        data: { labels: [], datasets: [{ label: 'Theft Detected', backgroundColor: 'rgba(153, 102, 255, 0.2)', borderColor: 'rgba(153, 102, 255, 1)', data: [], borderWidth: 1 }] },
         options: chartOptions
     });
 
-    // Fetch data every 5 seconds
     setInterval(fetchDataAndUpdateCharts, 5000);
-
-    // Function to fetch and update the current pump status
-
 
     async function fetchPumpStatus() {
         try {
             const response = await fetch("{% url 'get_pump_status' %}");
             const data = await response.json();
-            // const button = document.getElementById("pump-status-button");
             const h2Element = document.getElementById('pumpStatus');
 
             if (data.pump_status === "ON") {
@@ -142,10 +137,8 @@
         }
     }
 
-    // Poll pump status every 5 seconds
     setInterval(fetchPumpStatus, 1000);
 
-    // Fetch status on initial load
     window.onload = fetchPumpStatus;
 
 </script>

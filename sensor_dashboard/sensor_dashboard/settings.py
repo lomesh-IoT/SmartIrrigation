@@ -58,7 +58,7 @@ ROOT_URLCONF = 'sensor_dashboard.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'sensors/templates/sensors')],
+        'DIRS': [os.path.join(BASE_DIR, 'sensors/templates/sensors/')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -109,9 +109,13 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+# TIME_ZONE = 'UTC'
 
-USE_I18N = True
+# USE_I18N = True
+
+
+TIME_ZONE = 'Asia/Kolkata'  # Set time zone to Indian Standard Time (IST)
+USE_TZ = True  # Enable timezone support
 
 USE_TZ = True
 
@@ -127,7 +131,18 @@ STATIC_URL = 'static/'
 STATICFILES_DIRS = [BASE_DIR / "sensors/static",]
 # STATICFILES_DIRS = ( os.path.join(BASE_DIR, 'sensors', 'static/'),)
 
+MEDIA_URL = '/media/' 
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+TELEGRAM_BOT_TOKEN = '7357255525:AAE6MglgeGwTtc1JCA84d6GINPALdyNvhCk'
+TELEGRAM_CHAT_ID = '6002763882'  # Get this from Telegram
+
+
+LOGIN_URL = '/sensors/login/'
+LOGIN_REDIRECT_URL = '/dashboard/'  # Default redirect after login
+LOGOUT_REDIRECT_URL = '/login/'    # Redirect after logout

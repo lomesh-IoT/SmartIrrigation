@@ -32,13 +32,11 @@
         <!-- Motion Detection Alert Board -->
         <div class="alert-board alert-off" id="motionAlertBoard">
             <h2>Motion Detection</h2>
-            <p id="motionStatus">No Motion Detected</p>
+            <p id="motionStatus">No Theft Detected</p>
         </div>
     </div>
 
     <script>
-        // Functions to update each section
-
         // Update Temperature
         function updateTemperature(temp) {
             document.getElementById('temperatureValue').textContent = `${temp} °C`;
@@ -73,11 +71,11 @@
             const motionAlertBoard = document.getElementById('motionAlertBoard');
             const motionStatus = document.getElementById('motionStatus');
             if (motionDetected) {
-                motionStatus.textContent = "Motion Detected!";
+                motionStatus.textContent = "Theft Detected!";
                 motionAlertBoard.classList.remove("alert-off");
                 motionAlertBoard.classList.add("alert-on");
             } else {
-                motionStatus.textContent = "No Motion Detected";
+                motionStatus.textContent = "No Theft Detected";
                 motionAlertBoard.classList.remove("alert-on");
                 motionAlertBoard.classList.add("alert-off");
             }
@@ -103,7 +101,6 @@
 
 
         }
-        // Test updating with sample values (replace with real data fetching logic)
         setInterval(fetchDataAndUpdateCharts, 3000);
     </script>
 

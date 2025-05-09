@@ -20,3 +20,10 @@ class PumpData(models.Model):
     # pumpStatus = models.CharField(max_length=10, choices=[("ON", "ON"), ("OFF", "OFF")])
     pumpStatus = models.CharField(max_length=10)  # e.g., 'ON' or 'OFF'
     timestamp = models.DateTimeField(auto_now_add=True)
+
+# class CameraImageData(models.Model):
+#     timestamp = models.DateTimeField(auto_now_add=True)
+#     image = models.ImageField(upload_to='camera_images/')
+
+#     def __str__(self):
+#         return f"Image captured at {self.timestamp}"

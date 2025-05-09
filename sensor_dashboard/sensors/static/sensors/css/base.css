@@ -1,27 +1,23 @@
-/* Custom Navbar Style */
 .navbar {
-    background-color: #004d00 !important; /* Dark Green */
-    position: relative; /* Ensures navbar stays in top */
+    background-color: #004d00 !important; 
+    position: relative; 
     top: 0;
     width: 100%;
-    display: block; /* Ensure it's not floating */
+    display: block; 
 }
 
 .navbar .navbar-brand,
 .navbar .nav-link {
-    color: #ffffff !important; /* White Text */
+    color: #ffffff !important; 
 }
 
 .navbar .nav-link:hover {
-    color: #cce6cc !important; /* Lighter Green on Hover */
+    color: #cce6cc !important; 
 }
 
-/* Body Content Spacing */
 body {
     font-family: Arial, sans-serif;
     background-color: #e0f7e9;
-    /* Light green theme */
-    /* display: flex; */
     justify-content: center;
     align-items: center;
     height: 100vh;
@@ -36,7 +32,6 @@ body {
     padding-right: 15px;
 }
 
-/* Container Adjustments */
 .container {
     margin-top: 40px;
 }
