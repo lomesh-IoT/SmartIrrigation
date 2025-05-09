@@ -10,7 +10,8 @@ from django.core.files.storage import default_storage
 model_path = os.path.join(os.path.dirname(__file__), 'best_model.keras')
 model = load_model(model_path)
 print(os.path.exists(model_path)) 
-class_names = ['Apple___Apple_scab', 'Apple___Black_rot', 'Apple___Cedar_apple_rust', 'Apple___healthy', '']  # Update this list with actual class names
+class_names = ['Apple___Apple_scab', 'Apple___Black_rot', 'Apple___Cedar_apple_rust', 'Apple___healthy', 'Corn_(maize)___Cercospora_leaf_spot Gray_leaf_spot', 'Corn_(maize)___Common_rust_', 'Corn_(maize)___healthy', 'Corn_(maize)___Northern_Leaf_Blight',
+               ]  # Update this list with actual class names
 
 def predict_disease(image_path):
     image = load_img(image_path, target_size=(128, 128))

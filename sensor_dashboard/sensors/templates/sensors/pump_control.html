@@ -9,10 +9,13 @@
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     
     <style>
+        /* Center the content */
         .container {
             margin-top: 50px;
             text-align: center;
         }
+
+        /* Custom switch style */
         .switch {
             position: relative;
             display: inline-block;
@@ -31,7 +34,7 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background-color: #dc3545; /* Red for Off */
+            background-color: #dc3545; /* Red color for OFF */
             transition: .4s;
             border-radius: 34px;
         }
@@ -47,10 +50,22 @@
             border-radius: 50%;
         }
         input:checked + .slider {
-            background-color: #28a745; /* Green for On */
+            background-color: #28a745; /* Green color for ON */
         }
         input:checked + .slider:before {
             transform: translateX(26px);
+        }
+
+        /* Status text */
+        .status-text {
+            font-size: 18px;
+            margin-top: 20px;
+        }
+        .text-success {
+            color: green;
+        }
+        .text-danger {
+            color: red;
         }
     </style>
     
@@ -62,23 +77,27 @@
         
         <div class="d-flex justify-content-center align-items-center">
             <label class="switch">
-                <input type="checkbox" id="pumpToggleSwitch" onclick="togglePump()" {% if is_pump_on %}checked{% endif %}>
+                <input type="checkbox" id="pumpToggleSwitch" onclick="togglePump()">
                 <span class="slider"></span>
             </label>
         </div>
-        <p class="mt-3" id="statusText">Pump is <span class="font-weight-bold text-danger">{% if is_pump_on %}On{% else %}Off{% endif %}</span></p>
+        <p class="status-text" id="statusText">Pump is <span class="font-weight-bold text-danger">Off</span></p>
     </div>
 
     <script>
-        // Function to toggle the pump state via AJAX
         function togglePump() {
             $.ajax({
                 url: "{% url 'toggle_pump' %}",
                 type: "POST",
                 headers: { "X-CSRFToken": "{{ csrf_token }}" },
                 success: function(response) {
+                    // Set switch state and status text based on pump status
                     const isPumpOn = response.is_pump_on;
-                    updatePumpStatus(isPumpOn);
+                    $("#pumpToggleSwitch").prop("checked", isPumpOn);
+                    $("#statusText span")
+                        .text(isPumpOn ? "On" : "Off")
+                        .toggleClass("text-success", isPumpOn)
+                        .toggleClass("text-danger", !isPumpOn);
                 },
                 error: function(xhr, status, error) {
                     console.log("Error toggling pump: " + error);
@@ -86,25 +105,16 @@
             });
         }
 
-        // Function to update pump status text and switch state
-        function updatePumpStatus(isPumpOn) {
-            $("#pumpToggleSwitch").prop("checked", isPumpOn);
-            $("#statusText span")
-                .text(isPumpOn ? "On" : "Off")
-                .toggleClass("text-success", isPumpOn)
-                .toggleClass("text-danger", !isPumpOn);
-        }
-
-        // Function to fetch the current pump status
-        function fetchPumpStatus() {
-            $.get("{% url 'get_pump_status' %}", function(response) {
-                updatePumpStatus(response.is_pump_on);
-            });
-        }
-
-        // Initialize the pump status when the page loads
+        // Initial load to set switch state and status text
         $(document).ready(function() {
-            fetchPumpStatus(); // Initial fetch on page load
+            $.get("{% url 'toggle_pump' %}", function(response) {
+                const isPumpOn = response.is_pump_on;
+                $("#pumpToggleSwitch").prop("checked", isPumpOn);
+                $("#statusText span")
+                    .text(isPumpOn ? "On" : "Off")
+                    .toggleClass("text-success", isPumpOn)
+                    .toggleClass("text-danger", !isPumpOn);
+            });
         });
     </script>
 

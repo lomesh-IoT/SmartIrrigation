@@ -1,7 +1,7 @@
 import json
 import paho.mqtt.client as mqtt
 from django.core.management.base import BaseCommand
-from sensors.models import DHTData, SoilMoistureData, MotionData
+from sensors.models import DHTData, PumpData, SoilMoistureData, MotionData
 
 # MQTT configuration
 MQTT_BROKER = "broker.emqx.io"
@@ -9,7 +9,8 @@ MQTT_PORT = 1883
 MQTT_TOPICS = {
     "sensor/dht11": "dht",
     "sensor/soil": "soil",
-    "sensor/pir": "pir"
+    "sensor/pir": "pir",
+    "sensor/pump_status": "pump"
 }
 
 class Command(BaseCommand):
@@ -34,6 +35,9 @@ class Command(BaseCommand):
                 SoilMoistureData.objects.create(moisture_level=moisture_level)
             elif topic == "sensor/pir":
                 MotionData.objects.create(motion_detected=bool(data["motion"]))
+            elif topic == "sensor/pump_status":
+                PumpData.objects.create(pumpStatus=data["pumpStatus"])
+                print("Pump data saved")
 
             print(f"Data saved from topic {topic}: {data}")
 
